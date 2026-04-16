@@ -42,15 +42,16 @@ def build_category_keyboard(category, context):
 
     for item in items:
         qty = cart.get(item["id"], 0)
+        price = f"₮{item['price']:,}"
         if qty > 0:
             keyboard.append([
                 InlineKeyboardButton("➖", callback_data=f"minus:{item['id']}"),
-                InlineKeyboardButton(f"  {qty}  ", callback_data="noop"),
+                InlineKeyboardButton(f"{qty}x {item['name']}", callback_data="noop"),
                 InlineKeyboardButton("➕", callback_data=f"plus:{item['id']}"),
             ])
         else:
             keyboard.append([
-                InlineKeyboardButton(f"Нэмэх", callback_data=f"plus:{item['id']}"),
+                InlineKeyboardButton(f"{item['name']} • {price}", callback_data=f"plus:{item['id']}"),
             ])
 
     cats = list(MENU.keys())
@@ -71,11 +72,7 @@ def build_category_keyboard(category, context):
     return keyboard
 
 def build_category_text(category):
-    items = MENU[category]
-    text = f"*{category}*\n\n"
-    for item in items:
-        text += f"• {item['name']} — ₮{item['price']:,}\n"
-    return text
+    return f"*{category}*\n\nБүтээгдэхүүн сонгоно уу:"
 
 async def menu_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     first_cat = list(MENU.keys())[0]

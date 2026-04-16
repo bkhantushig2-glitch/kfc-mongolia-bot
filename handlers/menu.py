@@ -16,24 +16,36 @@ def get_cart(context):
         context.user_data["cart"] = {}
     return context.user_data["cart"]
 
-def cart_summary(context):
-    cart = get_cart(context)
-    if not cart:
-        return ""
-    total_items = sum(cart.values())
-    total_price = 0
-    for item_id, qty in cart.items():
-        item = find_item_by_id(item_id)
-        if item:
-            total_price += item["price"] * qty
-    return f"\n🛒 Сагс: {total_items} зүйл | ₮{total_price:,}"
-
 def find_item_by_id(item_id):
     for category, items in MENU.items():
         for item in items:
             if item["id"] == item_id:
                 return item
     return None
+
+def find_category_for_item(item_id):
+    for category, items in MENU.items():
+        for item in items:
+            if item["id"] == item_id:
+                return category
+    return None
+
+def build_categories_keyboard(context):
+    cart = get_cart(context)
+    keyboard = []
+    cats = list(MENU.keys())
+    for i in range(0, len(cats), 2):
+        row = [InlineKeyboardButton(cats[i], callback_data=f"cat:{cats[i]}")]
+        if i + 1 < len(cats):
+            row.append(InlineKeyboardButton(cats[i+1], callback_data=f"cat:{cats[i+1]}"))
+        keyboard.append(row)
+
+    if cart:
+        total_items = sum(cart.values())
+        total_price = sum(find_item_by_id(iid)["price"] * q for iid, q in cart.items() if find_item_by_id(iid))
+        keyboard.append([InlineKeyboardButton(f"🛒 Сагс харах ({total_items} зүйл • ₮{total_price:,})", callback_data="show_cart")])
+
+    return keyboard
 
 def build_category_keyboard(category, context):
     items = MENU[category]
@@ -54,32 +66,29 @@ def build_category_keyboard(category, context):
                 InlineKeyboardButton(f"{item['name']} • {price}", callback_data=f"plus:{item['id']}"),
             ])
 
-    cats = list(MENU.keys())
-    nav = []
-    idx = cats.index(category)
-    if idx > 0:
-        nav.append(InlineKeyboardButton("⬅️", callback_data=f"cat:{cats[idx-1]}"))
-    nav.append(InlineKeyboardButton(f"{idx+1}/{len(cats)}", callback_data="noop"))
-    if idx < len(cats) - 1:
-        nav.append(InlineKeyboardButton("➡️", callback_data=f"cat:{cats[idx+1]}"))
-    keyboard.append(nav)
+    keyboard.append([InlineKeyboardButton("⬅️ Ангилалууд", callback_data="categories")])
 
-    total_items = sum(cart.values()) if cart else 0
-    if total_items > 0:
+    if cart:
+        total_items = sum(cart.values())
         total_price = sum(find_item_by_id(iid)["price"] * q for iid, q in cart.items() if find_item_by_id(iid))
-        keyboard.append([InlineKeyboardButton(f"🛒 Сагс харах (₮{total_price:,})", callback_data="show_cart")])
+        keyboard.append([InlineKeyboardButton(f"🛒 Сагс харах ({total_items} зүйл • ₮{total_price:,})", callback_data="show_cart")])
 
     return keyboard
 
-def build_category_text(category):
-    return f"*{category}*\n\nБүтээгдэхүүн сонгоно уу:"
-
 async def menu_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    first_cat = list(MENU.keys())[0]
-    text = build_category_text(first_cat)
-    keyboard = build_category_keyboard(first_cat, context)
+    keyboard = build_categories_keyboard(context)
     await update.message.reply_text(
-        text,
+        "🍗 *KFC Mongolia*\n\nАнгилал сонгоно уу:",
+        reply_markup=InlineKeyboardMarkup(keyboard),
+        parse_mode="Markdown"
+    )
+
+async def categories_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    keyboard = build_categories_keyboard(context)
+    await query.edit_message_text(
+        "🍗 *KFC Mongolia*\n\nАнгилал сонгоно уу:",
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown"
     )
@@ -90,16 +99,9 @@ async def category_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     category = query.data.replace("cat:", "")
     if category not in MENU:
         return
-    text = build_category_text(category)
+    text = f"*{category}*\n\nБүтээгдэхүүн сонгоно уу:"
     keyboard = build_category_keyboard(category, context)
     await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
-
-def find_category_for_item(item_id):
-    for category, items in MENU.items():
-        for item in items:
-            if item["id"] == item_id:
-                return category
-    return None
 
 async def plus_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -111,7 +113,7 @@ async def plus_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     category = find_category_for_item(item_id)
     if category:
-        text = build_category_text(category)
+        text = f"*{category}*\n\nБүтээгдэхүүн сонгоно уу:"
         keyboard = build_category_keyboard(category, context)
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
@@ -131,7 +133,7 @@ async def minus_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     category = find_category_for_item(item_id)
     if category:
-        text = build_category_text(category)
+        text = f"*{category}*\n\nБүтээгдэхүүн сонгоно уу:"
         keyboard = build_category_keyboard(category, context)
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
@@ -141,6 +143,7 @@ async def noop_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def get_handlers():
     return [
         CommandHandler("menu", menu_command),
+        CallbackQueryHandler(categories_callback, pattern=r"^categories$"),
         CallbackQueryHandler(category_callback, pattern=r"^cat:"),
         CallbackQueryHandler(plus_callback, pattern=r"^plus:"),
         CallbackQueryHandler(minus_callback, pattern=r"^minus:"),

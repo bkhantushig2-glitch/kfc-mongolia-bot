@@ -11,6 +11,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "авахад туслана.\n\n"
         "📋 /menu — Цэс харах\n"
         "🛒 /cart — Сагс харах\n"
+        "💳 /checkout — Төлбөр төлөх\n"
         "🗑 /clear — Сагс цэвэрлэх\n"
         "📍 /branches — Салбарууд\n"
         "❓ /help — Тусламж",
@@ -22,6 +23,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "❓ *Тусламж*\n\n"
         "📋 /menu — KFC цэс харах, ангилалаар\n"
         "🛒 /cart — Сагсанд нэмсэн зүйлс харах\n"
+        "💳 /checkout — Захиалга баталгаажуулах\n"
         "🗑 /clear — Сагс хоослох\n"
         "📍 /branches — УБ дахь KFC салбарууд\n\n"
         "Цэснээс бүтээгдэхүүн сонгоод 🛒 товч\n"
@@ -34,6 +36,7 @@ async def post_init(application):
         BotCommand("start", "Ботыг эхлүүлэх"),
         BotCommand("menu", "Цэс харах"),
         BotCommand("cart", "Сагс харах"),
+        BotCommand("checkout", "Төлбөр төлөх"),
         BotCommand("clear", "Сагс цэвэрлэх"),
         BotCommand("branches", "Салбарууд"),
         BotCommand("help", "Тусламж"),

@@ -11,56 +11,22 @@ def load_menu():
 
 MENU = load_menu()
 
-async def menu_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = []
-    for category in MENU:
-        keyboard.append([InlineKeyboardButton(category, callback_data=f"cat:{category}")])
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(
-        "🍗 *KFC Mongolia Цэс*\n\nАнгилал сонгоно уу:",
-        reply_markup=reply_markup,
-        parse_mode="Markdown"
-    )
+def get_cart(context):
+    if "cart" not in context.user_data:
+        context.user_data["cart"] = {}
+    return context.user_data["cart"]
 
-async def category_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    category = query.data.replace("cat:", "")
-
-    if category not in MENU:
-        await query.edit_message_text("Ангилал олдсонгүй.")
-        return
-
-    items = MENU[category]
-    text = f"*{category}*\n\n"
-    keyboard = []
-
-    for item in items:
-        text += f"• {item['name']} — ₮{item['price']:,}\n"
-        keyboard.append([InlineKeyboardButton(
-            f"🛒 {item['name']} ₮{item['price']:,}",
-            callback_data=f"add:{item['id']}"
-        )])
-
-    keyboard.append([InlineKeyboardButton("⬅️ Буцах", callback_data="back_to_menu")])
-
-    await query.edit_message_text(
-        text,
-        reply_markup=InlineKeyboardMarkup(keyboard),
-        parse_mode="Markdown"
-    )
-
-async def back_to_menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    keyboard = []
-    for category in MENU:
-        keyboard.append([InlineKeyboardButton(category, callback_data=f"cat:{category}")])
-    await query.edit_message_text(
-        "🍗 *KFC Mongolia Цэс*\n\nАнгилал сонгоно уу:",
-        reply_markup=InlineKeyboardMarkup(keyboard),
-        parse_mode="Markdown"
-    )
+def cart_summary(context):
+    cart = get_cart(context)
+    if not cart:
+        return ""
+    total_items = sum(cart.values())
+    total_price = 0
+    for item_id, qty in cart.items():
+        item = find_item_by_id(item_id)
+        if item:
+            total_price += item["price"] * qty
+    return f"\n🛒 Сагс: {total_items} зүйл | ₮{total_price:,}"
 
 def find_item_by_id(item_id):
     for category, items in MENU.items():
@@ -69,9 +35,115 @@ def find_item_by_id(item_id):
                 return item
     return None
 
+def build_category_keyboard(category, context):
+    items = MENU[category]
+    cart = get_cart(context)
+    keyboard = []
+
+    for item in items:
+        qty = cart.get(item["id"], 0)
+        if qty > 0:
+            keyboard.append([
+                InlineKeyboardButton("➖", callback_data=f"minus:{item['id']}"),
+                InlineKeyboardButton(f"  {qty}  ", callback_data="noop"),
+                InlineKeyboardButton("➕", callback_data=f"plus:{item['id']}"),
+            ])
+        else:
+            keyboard.append([
+                InlineKeyboardButton(f"Нэмэх", callback_data=f"plus:{item['id']}"),
+            ])
+
+    cats = list(MENU.keys())
+    nav = []
+    idx = cats.index(category)
+    if idx > 0:
+        nav.append(InlineKeyboardButton("⬅️", callback_data=f"cat:{cats[idx-1]}"))
+    nav.append(InlineKeyboardButton(f"{idx+1}/{len(cats)}", callback_data="noop"))
+    if idx < len(cats) - 1:
+        nav.append(InlineKeyboardButton("➡️", callback_data=f"cat:{cats[idx+1]}"))
+    keyboard.append(nav)
+
+    total_items = sum(cart.values()) if cart else 0
+    if total_items > 0:
+        total_price = sum(find_item_by_id(iid)["price"] * q for iid, q in cart.items() if find_item_by_id(iid))
+        keyboard.append([InlineKeyboardButton(f"🛒 Сагс харах (₮{total_price:,})", callback_data="show_cart")])
+
+    return keyboard
+
+def build_category_text(category):
+    items = MENU[category]
+    text = f"*{category}*\n\n"
+    for item in items:
+        text += f"• {item['name']} — ₮{item['price']:,}\n"
+    return text
+
+async def menu_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    first_cat = list(MENU.keys())[0]
+    text = build_category_text(first_cat)
+    keyboard = build_category_keyboard(first_cat, context)
+    await update.message.reply_text(
+        text,
+        reply_markup=InlineKeyboardMarkup(keyboard),
+        parse_mode="Markdown"
+    )
+
+async def category_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    category = query.data.replace("cat:", "")
+    if category not in MENU:
+        return
+    text = build_category_text(category)
+    keyboard = build_category_keyboard(category, context)
+    await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+
+def find_category_for_item(item_id):
+    for category, items in MENU.items():
+        for item in items:
+            if item["id"] == item_id:
+                return category
+    return None
+
+async def plus_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    item_id = query.data.replace("plus:", "")
+    cart = get_cart(context)
+    cart[item_id] = cart.get(item_id, 0) + 1
+    item = find_item_by_id(item_id)
+    await query.answer(f"✅ {item['name']} x{cart[item_id]}")
+
+    category = find_category_for_item(item_id)
+    if category:
+        text = build_category_text(category)
+        keyboard = build_category_keyboard(category, context)
+        await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+
+async def minus_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    item_id = query.data.replace("minus:", "")
+    cart = get_cart(context)
+    if item_id in cart:
+        cart[item_id] -= 1
+        if cart[item_id] <= 0:
+            del cart[item_id]
+    item = find_item_by_id(item_id)
+    qty = cart.get(item_id, 0)
+    await query.answer(f"{'❌ Хасагдлаа' if qty == 0 else f'{item[\"name\"]} x{qty}'}")
+
+    category = find_category_for_item(item_id)
+    if category:
+        text = build_category_text(category)
+        keyboard = build_category_keyboard(category, context)
+        await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+
+async def noop_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.answer()
+
 def get_handlers():
     return [
         CommandHandler("menu", menu_command),
         CallbackQueryHandler(category_callback, pattern=r"^cat:"),
-        CallbackQueryHandler(back_to_menu_callback, pattern=r"^back_to_menu$"),
+        CallbackQueryHandler(plus_callback, pattern=r"^plus:"),
+        CallbackQueryHandler(minus_callback, pattern=r"^minus:"),
+        CallbackQueryHandler(noop_callback, pattern=r"^noop$"),
     ]

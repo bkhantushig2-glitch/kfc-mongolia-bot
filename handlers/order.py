@@ -24,6 +24,47 @@ async def add_to_cart_callback(update: Update, context: ContextTypes.DEFAULT_TYP
     count = len(context.user_data["cart"])
     await query.answer(f"✅ {item['name']} нэмэгдлээ! Сагс: {count} зүйл, ₮{total:,}")
 
+async def undo_last_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    cart = context.user_data.get("cart", [])
+    if cart:
+        removed = cart.pop()
+        await query.answer(f"❌ {removed['name']} хасагдлаа!")
+    else:
+        await query.answer("Сагс хоосон байна!")
+
+async def remove_item_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    idx = int(query.data.replace("rm:", ""))
+    cart = context.user_data.get("cart", [])
+
+    if idx < len(cart):
+        removed = cart.pop(idx)
+        await query.answer(f"❌ {removed['name']} хасагдлаа!")
+    else:
+        await query.answer("Олдсонгүй!")
+
+    if not cart:
+        await query.edit_message_text("🛒 Сагс хоосон байна.\n\n/menu дарж захиалга өгнө үү!")
+        return
+
+    text = "🛒 *Таны захиалга:*\n\n"
+    keyboard = []
+    for i, item in enumerate(cart):
+        text += f"{i+1}. {item['name']} — ₮{item['price']:,}\n"
+        keyboard.append([InlineKeyboardButton(f"❌ {item['name']}", callback_data=f"rm:{i}")])
+
+    total = sum(i["price"] for i in cart)
+    text += f"\n{'─' * 25}\n"
+    text += f"*Нийт: ₮{total:,}*\n"
+    text += f"📦 {len(cart)} зүйл"
+
+    keyboard.append([InlineKeyboardButton("💳 Төлбөр төлөх", callback_data="checkout")])
+    keyboard.append([InlineKeyboardButton("🗑 Бүгдийг цэвэрлэх", callback_data="clear_cart")])
+    keyboard.append([InlineKeyboardButton("📋 Цэс харах", callback_data="back_to_menu")])
+
+    await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+
 async def cart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cart = context.user_data.get("cart", [])
     if not cart:
@@ -33,19 +74,19 @@ async def cart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     text = "🛒 *Таны захиалга:*\n\n"
-    for i, item in enumerate(cart, 1):
-        text += f"{i}. {item['name']} — ₮{item['price']:,}\n"
+    keyboard = []
+    for i, item in enumerate(cart):
+        text += f"{i+1}. {item['name']} — ₮{item['price']:,}\n"
+        keyboard.append([InlineKeyboardButton(f"❌ {item['name']}", callback_data=f"rm:{i}")])
 
     total = sum(i["price"] for i in cart)
     text += f"\n{'─' * 25}\n"
     text += f"*Нийт: ₮{total:,}*\n"
     text += f"📦 {len(cart)} зүйл"
 
-    keyboard = [
-        [InlineKeyboardButton("💳 Төлбөр төлөх", callback_data="checkout")],
-        [InlineKeyboardButton("🗑 Сагс цэвэрлэх", callback_data="clear_cart")],
-        [InlineKeyboardButton("📋 Цэс харах", callback_data="back_to_menu")],
-    ]
+    keyboard.append([InlineKeyboardButton("💳 Төлбөр төлөх", callback_data="checkout")])
+    keyboard.append([InlineKeyboardButton("🗑 Бүгдийг цэвэрлэх", callback_data="clear_cart")])
+    keyboard.append([InlineKeyboardButton("📋 Цэс харах", callback_data="back_to_menu")])
 
     await update.message.reply_text(
         text,
@@ -127,6 +168,7 @@ def get_handlers():
         CommandHandler("clear", clear_command),
         CommandHandler("checkout", checkout_command),
         CallbackQueryHandler(add_to_cart_callback, pattern=r"^add:"),
+        CallbackQueryHandler(remove_item_callback, pattern=r"^rm:"),
         CallbackQueryHandler(checkout_callback, pattern=r"^checkout$"),
         CallbackQueryHandler(clear_cart_callback, pattern=r"^clear_cart$"),
         MessageHandler(filters.TEXT & ~filters.COMMAND, receive_address),

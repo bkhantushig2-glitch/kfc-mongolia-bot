@@ -1,0 +1,33 @@
+{
+  "🍗 Тахианы мах": [
+    {"id": "c1", "name": "Original Тахиа (2ш)", "name_en": "Original Chicken (2pc)", "price": 12900},
+    {"id": "c2", "name": "Original Тахиа (3ш)", "name_en": "Original Chicken (3pc)", "price": 17900},
+    {"id": "c3", "name": "Hot Wings (6ш)", "name_en": "Hot Wings (6pc)", "price": 9900},
+    {"id": "c4", "name": "Hot Wings (12ш)", "name_en": "Hot Wings (12pc)", "price": 17900},
+    {"id": "c5", "name": "Strips (3ш)", "name_en": "Strips (3pc)", "price": 10900}
+  ],
+  "🍔 Бургер": [
+    {"id": "b1", "name": "Зингер Бургер", "name_en": "Zinger Burger", "price": 12900},
+    {"id": "b2", "name": "Чизбургер", "name_en": "Cheeseburger", "price": 8900},
+    {"id": "b3", "name": "Тауэр Бургер", "name_en": "Tower Burger", "price": 14900},
+    {"id": "b4", "name": "Твистер", "name_en": "Twister Wrap", "price": 10900}
+  ],
+  "🎁 Комбо": [
+    {"id": "k1", "name": "Комбо 1 (Зингер + Фри + Кола)", "name_en": "Combo 1 (Zinger+Fries+Cola)", "price": 18900},
+    {"id": "k2", "name": "Комбо 2 (2 Тахиа + Фри + Кола)", "name_en": "Combo 2 (2pc+Fries+Cola)", "price": 19900},
+    {"id": "k3", "name": "Гэр бүлийн хайрцаг", "name_en": "Family Box", "price": 45900},
+    {"id": "k4", "name": "Найзуудын хайрцаг", "name_en": "Friends Box", "price": 35900}
+  ],
+  "🍟 Хачиртай": [
+    {"id": "s1", "name": "Фри (Жижиг)", "name_en": "Fries (Small)", "price": 3900},
+    {"id": "s2", "name": "Фри (Том)", "name_en": "Fries (Large)", "price": 5900},
+    {"id": "s3", "name": "Коулслоу", "name_en": "Coleslaw", "price": 3500},
+    {"id": "s4", "name": "Шөлтэй будаа", "name_en": "Rice with Gravy", "price": 3900}
+  ],
+  "🥤 Ундаа": [
+    {"id": "d1", "name": "Кока-Кола (Жижиг)", "name_en": "Coca-Cola (Small)", "price": 2500},
+    {"id": "d2", "name": "Кока-Кола (Том)", "name_en": "Coca-Cola (Large)", "price": 3500},
+    {"id": "d3", "name": "Фанта", "name_en": "Fanta", "price": 2500},
+    {"id": "d4", "name": "Спрайт", "name_en": "Sprite", "price": 2500}
+  ]
+}

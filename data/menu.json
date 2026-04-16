@@ -1,35 +1,87 @@
 {
-  "🍗 Тахианы мах": [
-    {"id": "c1", "name": "Original Тахиа (2ш)", "name_en": "Original Chicken (2pc)", "price": 13900},
-    {"id": "c2", "name": "Original Тахиа (3ш)", "name_en": "Original Chicken (3pc)", "price": 18900},
-    {"id": "c3", "name": "Hot Wings (6ш)", "name_en": "Hot Wings (6pc)", "price": 9900},
-    {"id": "c4", "name": "Hot Wings (12ш)", "name_en": "Hot Wings (12pc)", "price": 17900},
-    {"id": "c5", "name": "Strips (3ш)", "name_en": "Strips (3pc)", "price": 10900}
+  "🍗 Дан бүтээгдэхүүн": [
+    {"id": "d1", "name": "Филле бургер", "price": 7000},
+    {"id": "d2", "name": "Зингер бургер", "price": 7000},
+    {"id": "d3", "name": "Филле бургер /халуун ногоогүй/", "price": 7000},
+    {"id": "d4", "name": "Филле боксмастер", "price": 12000},
+    {"id": "d5", "name": "Зингер боксмастер", "price": 12000},
+    {"id": "d6", "name": "5ш тахиа", "price": 22500},
+    {"id": "d7", "name": "12ш тахиа", "price": 50500},
+    {"id": "d8", "name": "10ш наггет", "price": 7500},
+    {"id": "d9", "name": "20ш наггет", "price": 14000}
   ],
-  "🍔 Бургер": [
-    {"id": "b1", "name": "Зингер Бургер", "name_en": "Zinger Burger", "price": 11900},
-    {"id": "b2", "name": "Чизбургер", "name_en": "Cheeseburger", "price": 8900},
-    {"id": "b3", "name": "Тауэр Бургер", "name_en": "Tower Burger", "price": 13900},
-    {"id": "b4", "name": "Твистер", "name_en": "Twister Wrap", "price": 10900}
+  "🍔 Мини комбо": [
+    {"id": "mc1", "name": "Боксмастер комбо", "price": 15000},
+    {"id": "mc2", "name": "Тахианы махан комбо", "price": 12000},
+    {"id": "mc3", "name": "Филле комбо /халуун ногоогүй/", "price": 11000},
+    {"id": "mc4", "name": "Зингер комбо", "price": 11000}
   ],
-  "🎁 Комбо": [
-    {"id": "k1", "name": "Зингер Комбо (Бургер + Фри + Кола)", "name_en": "Zinger Combo (Burger+Fries+Cola)", "price": 15900},
-    {"id": "k2", "name": "Тахианы Комбо (2ш + Фри + Кола)", "name_en": "Chicken Combo (2pc+Fries+Cola)", "price": 16900},
-    {"id": "k3", "name": "Снэк Бокс", "name_en": "Snack Box", "price": 11900},
-    {"id": "k4", "name": "Гэр бүлийн хайрцаг", "name_en": "Family Bucket", "price": 45900},
-    {"id": "k5", "name": "Найзуудын хайрцаг", "name_en": "Friends Box", "price": 35900}
+  "🧒 Сет бүтээгдэхүүн": [
+    {"id": "s1", "name": "Хүүхдийн багц 1", "price": 8000},
+    {"id": "s2", "name": "Хүүхдийн багц 2", "price": 8500},
+    {"id": "s3", "name": "Тэндэр сет", "price": 9000},
+    {"id": "s4", "name": "Бяслагт сет", "price": 11000},
+    {"id": "s5", "name": "Бэнто сет", "price": 11500}
   ],
-  "🍟 Хачиртай": [
-    {"id": "s1", "name": "Фри (Жижиг)", "name_en": "Fries (Small)", "price": 3500},
-    {"id": "s2", "name": "Фри (Том)", "name_en": "Fries (Large)", "price": 5500},
-    {"id": "s3", "name": "Коулслоу", "name_en": "Coleslaw", "price": 3500},
-    {"id": "s4", "name": "Шөлтэй будаа", "name_en": "Rice with Gravy", "price": 3900}
+  "🎁 Өег багцууд": [
+    {"id": "ob1", "name": "Өег боксмастер", "price": 21500},
+    {"id": "ob2", "name": "Өег тэндэртэй багц", "price": 16000},
+    {"id": "ob3", "name": "Өег тахианы махан багц", "price": 17000},
+    {"id": "ob4", "name": "Өег филле багц", "price": 16000},
+    {"id": "ob5", "name": "Өег зингер багц", "price": 16000}
+  ],
+  "👨‍👩‍👧‍👦 Арвин багцууд": [
+    {"id": "ab1", "name": "Бургертэй баялаг багц", "price": 48500},
+    {"id": "ab2", "name": "Гэр бүлийн багц", "price": 54000},
+    {"id": "ab3", "name": "Найзууд багц", "price": 26500},
+    {"id": "ab4", "name": "Тэндэр арвин багц", "price": 50500}
+  ],
+  "🪣 Тендертэй багц": [
+    {"id": "tb1", "name": "Тендертэй багц", "price": 18500},
+    {"id": "tb2", "name": "Андууд тендертэй багц", "price": 36000},
+    {"id": "tb3", "name": "Арвин багц", "price": 52000}
+  ],
+  "🍔 Бургертэй багц": [
+    {"id": "bb1", "name": "Шеф зингер бургер", "price": 11000},
+    {"id": "bb2", "name": "Шеф филлет бургер", "price": 11000},
+    {"id": "bb3", "name": "Шеф хүргэлтийн баялаг багц", "price": 70000},
+    {"id": "bb4", "name": "Бургертэй багц", "price": 17500},
+    {"id": "bb5", "name": "Найзууд бургертэй багц", "price": 40000},
+    {"id": "bb6", "name": "Хамтдаа бургертэй багц", "price": 68000},
+    {"id": "bb7", "name": "Дүүргэ багц", "price": 90000}
+  ],
+  "🍰 Амттан": [
+    {"id": "a1", "name": "2ш өндөгтэй тарт", "price": 5500},
+    {"id": "a2", "name": "Торхтой ванилла зайрмаг", "price": 1500},
+    {"id": "a3", "name": "Oatmeal raisin cookie", "price": 2500},
+    {"id": "a4", "name": "Double chocolate cookie", "price": 2500}
+  ],
+  "🍟 Хачир": [
+    {"id": "h1", "name": "Бяслагтай шарсан төмс", "price": 6500},
+    {"id": "h2", "name": "2pcs cheesecake ball", "price": 6900},
+    {"id": "h3", "name": "Моццарелла стик", "price": 7900},
+    {"id": "h4", "name": "Шарсан төмс", "price": 3500},
+    {"id": "h5", "name": "Коулсло (жижиг)", "price": 2500},
+    {"id": "h6", "name": "Коулсло (том)", "price": 4500},
+    {"id": "h7", "name": "Будаа", "price": 1500}
   ],
   "🥤 Ундаа": [
-    {"id": "d1", "name": "Кока-Кола (Жижиг)", "name_en": "Coca-Cola (Small)", "price": 2500},
-    {"id": "d2", "name": "Кока-Кола (Том)", "name_en": "Coca-Cola (Large)", "price": 3500},
-    {"id": "d3", "name": "Фанта", "name_en": "Fanta", "price": 2500},
-    {"id": "d4", "name": "Спрайт", "name_en": "Sprite", "price": 2500},
-    {"id": "d5", "name": "Зайрмаг (Конус)", "name_en": "Ice Cream Cone", "price": 5500}
+    {"id": "u1", "name": "Natura banana juice", "price": 3000},
+    {"id": "u2", "name": "Natura berry juice", "price": 3000},
+    {"id": "u3", "name": "Цэвэр ус", "price": 1000},
+    {"id": "u4", "name": "Pepsi (жижиг)", "price": 1000},
+    {"id": "u5", "name": "Pepsi (том)", "price": 1500},
+    {"id": "u6", "name": "7up (жижиг)", "price": 1000},
+    {"id": "u7", "name": "7up (том)", "price": 1500},
+    {"id": "u8", "name": "Mirinda (жижиг)", "price": 1000},
+    {"id": "u9", "name": "Mirinda (том)", "price": 1500},
+    {"id": "u10", "name": "Mountain Dew (жижиг)", "price": 1000},
+    {"id": "u11", "name": "Mountain Dew (том)", "price": 1500},
+    {"id": "u12", "name": "Цай", "price": 1500},
+    {"id": "u13", "name": "Американо", "price": 4000},
+    {"id": "u14", "name": "Местэй американо", "price": 4000},
+    {"id": "u15", "name": "Кофе латте", "price": 5500},
+    {"id": "u16", "name": "Капучино", "price": 5500},
+    {"id": "u17", "name": "Местэй латте", "price": 5500}
   ]
 }

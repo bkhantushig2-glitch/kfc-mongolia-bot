@@ -128,7 +128,9 @@ async def minus_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             del cart[item_id]
     item = find_item_by_id(item_id)
     qty = cart.get(item_id, 0)
-    await query.answer(f"{'❌ Хасагдлаа' if qty == 0 else f'{item[\"name\"]} x{qty}'}")
+    name = item["name"]
+    msg = "❌ Хасагдлаа" if qty == 0 else f"{name} x{qty}"
+    await query.answer(msg)
 
     category = find_category_for_item(item_id)
     if category:
